@@ -11,10 +11,11 @@ class LaporanSampahController extends Controller
 {
     public function index(Request $request): View
     {
-        $laporan = $request->user()
-            ->laporanHarianSampah()
-            ->orderByDesc('tanggal')
-            ->paginate(10);
+        $query = $request->user()->isAdmin()
+            ? LaporanHarianSampah::with('user')
+            : $request->user()->laporanHarianSampah();
+
+        $laporan = $query->orderByDesc('tanggal')->paginate(10);
 
         return view('laporan_sampah.index', compact('laporan'));
     }
@@ -70,6 +71,6 @@ class LaporanSampahController extends Controller
     /** Member hanya boleh mengubah/menghapus data miliknya sendiri. */
     private function authorizeOwner(Request $request, LaporanHarianSampah $laporan): void
     {
-        abort_unless($laporan->id_user === $request->user()->id_user, 403);
+        abort_unless($request->user()->isAdmin() || $laporan->id_user === $request->user()->id_user, 403);
     }
 }

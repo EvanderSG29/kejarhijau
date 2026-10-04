@@ -15,10 +15,10 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                                         </x-nav-link>
-                    @if (Auth::user()->isMember())
+                    @auth
                         <x-nav-link :href="route('laporan-sampah.index')" :active="request()->routeIs('laporan-sampah.*')">Laporan Sampah</x-nav-link>
                         <x-nav-link :href="route('catatan-tanaman.index')" :active="request()->routeIs('catatan-tanaman.*')">Catatan Tanaman</x-nav-link>
-                    @endif
+                    @endauth
                 </div>
             </div>
 
@@ -74,10 +74,10 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
                         </x-responsive-nav-link>
-            @if (Auth::user()->isMember())
+            @auth
                 <x-responsive-nav-link :href="route('laporan-sampah.index')">Laporan Sampah</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('catatan-tanaman.index')">Catatan Tanaman</x-responsive-nav-link>
-            @endif
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->

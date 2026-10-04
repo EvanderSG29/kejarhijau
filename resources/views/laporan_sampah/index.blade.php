@@ -11,6 +11,7 @@
                 <table class="min-w-full text-sm text-left">
                     <thead>
                         <tr class="border-b font-semibold">
+                            @if (Auth::user()->isAdmin())<th class="py-2 pr-4">Pemilik</th>@endif
                             <th class="py-2 pr-4">Tanggal</th>
                             <th class="py-2 pr-4">Jenis</th>
                             <th class="py-2 pr-4">Jumlah</th>
@@ -21,6 +22,7 @@
                     <tbody>
                         @forelse ($laporan as $item)
                             <tr class="border-b">
+                                @if (Auth::user()->isAdmin())<td class="py-2 pr-4">{{ $item->user->nama_lengkap ?? '-' }}</td>@endif
                                 <td class="py-2 pr-4">{{ $item->tanggal->format('d-m-Y') }}</td>
                                 <td class="py-2 pr-4">{{ $item->jenis_sampah ? 'Organik' : 'Anorganik' }}</td>
                                 <td class="py-2 pr-4">{{ $item->jumlah }} {{ $item->satuan }}</td>
