@@ -11,6 +11,7 @@
                 <table class="min-w-full text-sm text-left">
                     <thead>
                         <tr class="border-b font-semibold">
+                            @if (Auth::user()->isAdmin())<th class="py-2 pr-4">Pemilik</th>@endif
                             <th class="py-2 pr-4">Foto</th>
                             <th class="py-2 pr-4">Nama</th>
                             <th class="py-2 pr-4">Jenis</th>
@@ -21,9 +22,13 @@
                     <tbody>
                         @forelse ($catatan as $item)
                             <tr class="border-b">
+                                @if (Auth::user()->isAdmin())<td class="py-2 pr-4">{{ $item->user->nama_lengkap ?? '-' }}</td>@endif
                                 <td class="py-2 pr-4">
                                     @if ($item->foto_tanaman)
-                                        <img src="{{ $item->foto_tanaman }}" alt="{{ $item->nama_tanaman }}" class="h-16 w-16 object-cover rounded">
+                                        <a href="{{ $item->foto_tanaman }}" target="_blank" title="Buka di Cloudinary">
+                                            <img src="{{ $item->foto_tanaman }}" alt="{{ $item->nama_tanaman }}" class="h-16 w-16 object-cover rounded">
+                                        </a>
+                                        <span class="text-xs text-green-700">Tersimpan di Cloudinary</span>
                                     @else
                                         -
                                     @endif

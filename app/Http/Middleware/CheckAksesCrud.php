@@ -15,7 +15,7 @@ class CheckAksesCrud
     {
         $user = $request->user();
 
-        if (! $user || ! $user->status_akses) {
+        if (! $user || (! $user->isAdmin() && ! $user->status_akses)) {
             return redirect()
                 ->route('dashboard')
                 ->with('error', 'Akses CRUD Anda belum diaktifkan oleh admin.');

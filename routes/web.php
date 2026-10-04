@@ -26,8 +26,8 @@ Route::middleware('auth')->group(function () {
         Route::patch('/members/{user}/toggle-akses', [AdminController::class, 'toggleAkses'])->name('members.toggle-akses');
     });
 
-    // Khusus Member + wajib status_akses = true
-    Route::middleware(['role:member', 'akses.crud'])->group(function () {
+    // Admin (selalu boleh) + Member (wajib status_akses = true)
+    Route::middleware(['role:admin,member', 'akses.crud'])->group(function () {
         Route::resource('laporan-sampah', LaporanSampahController::class)->except('show');
         Route::resource('catatan-tanaman', CatatanTanamanController::class)->except('show');
     });
