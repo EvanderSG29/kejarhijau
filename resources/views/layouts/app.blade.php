@@ -5,6 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        <!-- PWA Meta Tags & Manifest -->
+        <meta name="theme-color" content="#16a34a">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="KejarHijau">
+        <link rel="manifest" href="/manifest.json">
+        <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
         <title>{{ config('app.name', 'KejarHijau') }}</title>
 
         <!-- Fonts -->
@@ -32,15 +40,29 @@
                 {{-- Pesan flash sukses / error --}}
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
                     @if (session('success'))
-                        <div class="mb-4 p-4 rounded bg-green-100 text-green-800">{{ session('success') }}</div>
+                        <div class="mb-4 p-4 rounded bg-green-100 text-green-800 border border-green-200">{{ session('success') }}</div>
                     @endif
                     @if (session('error'))
-                        <div class="mb-4 p-4 rounded bg-red-100 text-red-800">{{ session('error') }}</div>
+                        <div class="mb-4 p-4 rounded bg-red-100 text-red-800 border border-red-200">{{ session('error') }}</div>
+                    @endif
+                    @if (session('status'))
+                        <div class="mb-4 p-4 rounded bg-blue-100 text-blue-800 border border-blue-200">{{ session('status') }}</div>
                     @endif
                 </div>
 
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- PWA Service Worker Registration -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then((reg) => console.log('PWA ServiceWorker registered:', reg.scope))
+                        .catch((err) => console.warn('PWA ServiceWorker failed:', err));
+                });
+            }
+        </script>
     </body>
 </html>

@@ -13,7 +13,8 @@ class AdminController extends Controller
      */
     public function dashboard(): View
     {
-        $members = User::where('role', 'member')
+        $members = User::select(['id_user', 'nama_lengkap', 'email', 'role', 'status_akses', 'created_at'])
+            ->where('role', 'member')
             ->orderBy('nama_lengkap')
             ->paginate(15);
 
