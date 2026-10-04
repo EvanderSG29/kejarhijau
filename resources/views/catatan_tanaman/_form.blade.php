@@ -42,10 +42,21 @@
         <input id="foto_tanaman" name="foto_tanaman" type="file" accept="image/jpeg,image/png,image/webp" class="mt-2 block w-full border p-2 rounded">
         <input type="hidden" name="foto_tanaman_base64" id="foto_tanaman_base64">
 
-        <div id="foto-preview" class="mt-3 p-3 bg-green-50 border border-green-200 rounded hidden">
-            <p id="foto-info" class="text-sm font-semibold text-green-900"></p>
-            <p class="text-xs text-green-700 mt-0.5">✓ Gambar siap diunggah langsung ke Cloudinary</p>
-            <img id="foto-img" alt="Preview Gambar" class="h-44 mt-2 rounded border object-contain bg-white">
+        <div id="foto-preview" class="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg hidden">
+            <div class="flex items-center justify-between">
+                <p id="foto-info" class="text-sm font-semibold text-emerald-900"></p>
+                <span id="foto-badge" class="px-2 py-0.5 text-xs font-bold bg-emerald-200 text-emerald-800 rounded-full">WebP Optimized</span>
+            </div>
+            <p id="foto-savings" class="text-xs text-emerald-700 mt-0.5">✓ Foto berhasil dikompresi di browser (hemat kuota & upload instan)</p>
+            <img id="foto-img" alt="Preview Gambar" class="h-44 mt-2 rounded border object-contain bg-white shadow-sm">
+        </div>
+
+        <div id="compressing-indicator" class="mt-2 text-xs text-indigo-600 font-medium hidden flex items-center gap-1">
+            <svg class="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <span>Sedang mengompresi gambar ke WebP...</span>
         </div>
 
         <x-input-error :messages="$errors->get('foto_tanaman')" class="mt-2" />
@@ -57,6 +68,9 @@
                 const base64Input = document.getElementById('foto_tanaman_base64');
                 const img = document.getElementById('foto-img');
                 const info = document.getElementById('foto-info');
+                const savings = document.getElementById('foto-savings');
+                const indicator = document.getElementById('compressing-indicator');
+                const btnSubmit = document.getElementById('btn-submit');
 
                 if (!file) {
                     box.classList.add('hidden');
@@ -64,30 +78,88 @@
                     return;
                 }
 
-                const sizeMB = (file.size / 1024 / 1024).toFixed(2);
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Ukuran foto melebihi batas 5 MB (' + sizeMB + ' MB). Silakan pilih foto lain.');
-                    this.value = '';
-                    box.classList.add('hidden');
-                    base64Input.value = '';
-                    return;
-                }
+                const originalSizeKB = (file.size / 1024).toFixed(1);
+                const originalSizeMB = (file.size / 1024 / 1024).toFixed(2);
+                const originalDisplay = file.size > 1024 * 1024 ? `${originalSizeMB} MB` : `${originalSizeKB} KB`;
 
-                // Baca file ke Base64 (bypasses Windows temp upload limitation)
+                indicator.classList.remove('hidden');
+                if (btnSubmit) btnSubmit.disabled = true;
+
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    base64Input.value = e.target.result;
-                    img.src = e.target.result;
-                    info.textContent = 'Foto Terpilih: ' + file.name + ' (' + sizeMB + ' MB)';
-                    box.classList.remove('hidden');
+                    const tempImg = new Image();
+                    tempImg.onload = function () {
+                        // Canvas compression logic: Max width/height 1600px
+                        const maxDim = 1600;
+                        let width = tempImg.width;
+                        let height = tempImg.height;
+
+                        if (width > maxDim || height > maxDim) {
+                            if (width > height) {
+                                height = Math.round((height * maxDim) / width);
+                                width = maxDim;
+                            } else {
+                                width = Math.round((width * maxDim) / height);
+                                height = maxDim;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(tempImg, 0, 0, width, height);
+
+                        // Export as WebP with 0.82 quality
+                        let compressedDataUrl = canvas.toDataURL('image/webp', 0.82);
+
+                        // Fallback jika browser lawas tidak support WebP di Canvas
+                        if (!compressedDataUrl.startsWith('data:image/webp')) {
+                            compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                        }
+
+                        base64Input.value = compressedDataUrl;
+                        img.src = compressedDataUrl;
+
+                        // Calculate compressed size
+                        const head = compressedDataUrl.indexOf(',');
+                        const compressedBytes = Math.round((compressedDataUrl.length - head) * 3 / 4);
+                        const compressedKB = (compressedBytes / 1024).toFixed(1);
+                        const percentSaved = Math.max(0, Math.round((1 - (compressedBytes / file.size)) * 100));
+
+                        info.textContent = `${file.name} (${originalDisplay} → ${compressedKB} KB)`;
+                        savings.textContent = `✓ Berhasil dikompresi di HP (${percentSaved}% lebih hemat kuota). Siap diunggah cepat!`;
+
+                        indicator.classList.add('hidden');
+                        box.classList.remove('hidden');
+                        if (btnSubmit) btnSubmit.disabled = false;
+                    };
+                    tempImg.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
+            });
+
+            // Guard against double submissions
+            document.querySelector('form').addEventListener('submit', function (e) {
+                const btn = document.getElementById('btn-submit');
+                if (btn && !btn.disabled) {
+                    btn.disabled = true;
+                    btn.innerHTML = `
+                        <span class="inline-flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                            </svg>
+                            Menyimpan ke TiDB & Cloudinary...
+                        </span>
+                    `;
+                }
             });
         </script>
     </div>
 
     <div class="flex items-center gap-4 pt-2">
-        <x-primary-button id="btn-submit" onclick="if(document.querySelector('form').checkValidity()){ this.innerText='Menyimpan & Mengunggah...'; }">
+        <x-primary-button id="btn-submit">
             Simpan Catatan
         </x-primary-button>
         <a href="{{ route('catatan-tanaman.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900">Batal</a>

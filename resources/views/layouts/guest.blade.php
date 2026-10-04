@@ -5,7 +5,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <!-- PWA Meta Tags & Manifest -->
+        <meta name="theme-color" content="#16a34a">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="KejarHijau">
+        <link rel="manifest" href="/manifest.json">
+        <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+        <title>{{ config('app.name', 'KejarHijau') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -26,5 +34,16 @@
                 {{ $slot }}
             </div>
         </div>
+
+        <!-- PWA Service Worker Registration -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then((reg) => console.log('PWA ServiceWorker registered:', reg.scope))
+                        .catch((err) => console.warn('PWA ServiceWorker failed:', err));
+                });
+            }
+        </script>
     </body>
 </html>

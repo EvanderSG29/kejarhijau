@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Support\Facades\Notification;
+use App\Mail\OtpMail;
+use Illuminate\Support\Facades\Mail;
 
 test('reset password link screen can be rendered', function () {
     $response = $this->get('/forgot-password');
@@ -10,51 +10,15 @@ test('reset password link screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
-test('reset password link can be requested', function () {
-    Notification::fake();
+test('reset password otp can be requested', function () {
+    Mail::fake();
 
     $user = User::factory()->create();
 
-    $this->post('/forgot-password', ['email' => $user->email]);
+    $response = $this->post('/forgot-password', ['email' => $user->email]);
 
-    Notification::assertSentTo($user, ResetPassword::class);
-});
-
-test('reset password screen can be rendered', function () {
-    Notification::fake();
-
-    $user = User::factory()->create();
-
-    $this->post('/forgot-password', ['email' => $user->email]);
-
-    Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-        $response = $this->get('/reset-password/'.$notification->token);
-
-        $response->assertStatus(200);
-
-        return true;
-    });
-});
-
-test('password can be reset with valid token', function () {
-    Notification::fake();
-
-    $user = User::factory()->create();
-
-    $this->post('/forgot-password', ['email' => $user->email]);
-
-    Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
-        $response = $this->post('/reset-password', [
-            'token' => $notification->token,
-            'email' => $user->email,
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ]);
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect(route('login'));
-
-        return true;
+    $response->assertRedirect(route('password.otp.verify', ['email' => $user->email]));
+    Mail::assertSent(OtpMail::class, function ($mail) use ($user) {
+        return $mail->hasTo($user->email);
     });
 });

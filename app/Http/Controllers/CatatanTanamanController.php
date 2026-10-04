@@ -18,10 +18,19 @@ class CatatanTanamanController extends Controller
     public function index(Request $request): View
     {
         $query = $request->user()->isAdmin()
-            ? CatatanTanaman::with('user')
+            ? CatatanTanaman::with(['user:id_user,nama_lengkap,email'])
             : $request->user()->catatanTanaman();
 
-        $catatan = $query->latest()->paginate(10);
+        $catatan = $query->select([
+            'id_catatan_tanaman',
+            'id_user',
+            'nama_tanaman',
+            'jenis_tanaman',
+            'lokasi_tanaman',
+            'cara_merawat',
+            'foto_tanaman',
+            'created_at',
+        ])->latest()->paginate(10);
 
         return view('catatan_tanaman.index', compact('catatan'));
     }

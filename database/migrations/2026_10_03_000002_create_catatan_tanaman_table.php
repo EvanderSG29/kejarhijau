@@ -22,6 +22,8 @@ return new class extends Migration
                 ->references('id_user')
                 ->on('users')
                 ->cascadeOnDelete();
+
+            $table->index(['id_user', 'created_at']);
         });
     }
 

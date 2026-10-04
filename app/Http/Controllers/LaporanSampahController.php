@@ -12,10 +12,19 @@ class LaporanSampahController extends Controller
     public function index(Request $request): View
     {
         $query = $request->user()->isAdmin()
-            ? LaporanHarianSampah::with('user')
+            ? LaporanHarianSampah::with(['user:id_user,nama_lengkap,email'])
             : $request->user()->laporanHarianSampah();
 
-        $laporan = $query->orderByDesc('tanggal')->paginate(10);
+        $laporan = $query->select([
+            'id_laporan_harian_sampah',
+            'id_user',
+            'tanggal',
+            'jenis_sampah',
+            'jumlah',
+            'satuan',
+            'tujuan_akhir',
+            'created_at',
+        ])->orderByDesc('tanggal')->paginate(10);
 
         return view('laporan_sampah.index', compact('laporan'));
     }
