@@ -1,0 +1,22 @@
+{
+  "name": "KejarHijau - Green Action Tracker",
+  "short_name": "KejarHijau",
+  "description": "Progressive Web App Laporan Harian Sampah dan Catatan Tanaman",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16a34a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
