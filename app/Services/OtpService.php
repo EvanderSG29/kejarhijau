@@ -17,7 +17,7 @@ class OtpService
     {
         // 1. Generate 6 digit numeric OTP
         $otp = str_pad((string) random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
-        $expiresAt = Carbon::now()->addMinutes(10);
+        $expiresAt = Carbon::now()->addMinutes(5);
 
         // 2. Hapus OTP lama untuk email ini agar tidak menumpuk
         DB::table('password_reset_otps')->where('email', $email)->delete();
@@ -31,13 +31,13 @@ class OtpService
             'updated_at' => now(),
         ]);
 
-        // 4. Kirim email via Laravel Mail (Gmail SMTP)
+        // 4. Kirim email via Laravel Mail (MailerSend API)
         try {
             Mail::to($email)->send(new \App\Mail\OtpMail($otp));
 
             return ['success' => true, 'otp' => $otp];
         } catch (Throwable $e) {
-            Log::error('Gagal mengirim OTP via SMTP Gmail: ' . $e->getMessage(), ['email' => $email]);
+            Log::error('Gagal mengirim OTP via MailerSend: ' . $e->getMessage(), ['email' => $email]);
             return ['success' => false, 'error' => $e->getMessage(), 'otp' => $otp];
         }
     }
