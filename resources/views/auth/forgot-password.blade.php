@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="mb-4 text-sm text-gray-600">
-        {{ __('Lupa password? Masukkan email Anda dan kami akan mengirimkan kode verifikasi OTP 6 digit ke email Anda via Resend.') }}
+        {{ __('Lupa password? Masukkan email Anda dan kami akan mengirimkan kode verifikasi OTP 6 digit ke email Anda.') }}
     </div>
 
     <!-- Session Status -->
