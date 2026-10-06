@@ -177,3 +177,62 @@ git tag -a v1.2.0 -m "Rilis v1.2.0: Menambahkan fitur otentikasi OTP"
 # Mengirim tag ke repositori jarak jauh (GitHub)
 git push origin v1.2.0
 ```
+
+---
+
+## 🔀 Alur Kerja Git (Branching & Pull Request)
+
+**DILARANG KERAS** melakukan *commit* atau *push* secara langsung ke *branch* `main`. *Branch* `main` dikonfigurasi untuk proses *deployment* otomatis (CI/CD) ke server produksi (Render). Oleh karena itu, *branch* ini harus selalu dalam keadaan stabil. 
+
+Setiap kali Anda ingin melakukan pembaruan kode, menambah fitur, atau memperbaiki *bug*, Anda **wajib** membuat *branch* baru dan mengajukan *Pull Request* (PR).
+
+### 1. Aturan Penamaan Branch
+
+Gunakan format standar berikut saat membuat *branch* baru:
+- **Fitur Baru:** `feature/<nama-fitur-pendek>` (contoh: `feature/login-sosial`, `feature/halaman-profil`)
+- **Perbaikan Bug:** `bugfix/<nama-bug-pendek>` (contoh: `bugfix/tombol-error`, `bugfix/kalkulasi-pajak`)
+- **Perbaikan Mendesak (Produksi):** `hotfix/<nama-masalah>` (contoh: `hotfix/server-crash`)
+- **Pekerjaan Rutin/Dokumentasi:** `chore/<pekerjaan>` atau `docs/<dokumentasi>`
+
+**Cara Membuat Branch Baru:**
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/nama-fitur-anda
+```
+
+### 2. Aturan Penulisan Pull Request (PR)
+
+Setelah Anda selesai mengerjakan kode di *branch* Anda dan melakukan *push* ke repositori, langkah selanjutnya adalah membuka *Pull Request* (PR) ke *branch* `main`.
+
+**Judul PR:**
+Judul PR harus mengikuti aturan *Conventional Commits* (sama seperti aturan penulisan *commit* di atas). 
+- Contoh Judul: `feat(auth): menambahkan sistem login dengan Google`
+
+**Deskripsi PR:**
+Gunakan Bahasa Indonesia yang formal dan terstruktur. Deskripsi yang baik harus mencakup tiga elemen utama (Apa, Mengapa, dan Bagaimana):
+1. **Apa yang diubah (What):** Jelaskan secara singkat ringkasan dari fitur yang ditambahkan atau *bug* yang diperbaiki.
+2. **Mengapa ini diperlukan (Why):** Berikan alasan dan konteks mengapa perubahan ini penting untuk dilakukan.
+3. **Bagaimana cara menguji (How to Test):** Berikan langkah-langkah konkret bagi pengulas kode (*reviewer*) untuk menguji fungsionalitas fitur atau perbaikan ini di komputer lokal mereka.
+
+**Contoh Deskripsi PR yang Baik:**
+```markdown
+### Apa yang diubah?
+Menambahkan integrasi OAuth 2.0 untuk memungkinkan pengguna masuk ke dalam aplikasi menggunakan akun Google.
+
+### Mengapa ini diperlukan?
+Mempermudah proses pendaftaran dan login (mengurangi friksi bagi pengguna baru yang tidak ingin mengisi form manual), sehingga diharapkan dapat meningkatkan tingkat konversi pendaftaran.
+
+### Cara pengujian lokal:
+1. Pastikan Anda telah menambahkan `GOOGLE_CLIENT_ID` dan `GOOGLE_CLIENT_SECRET` di `.env` (bisa minta di grup tim).
+2. Jalankan aplikasi, buka halaman `/login`, lalu klik tombol "Masuk dengan Google".
+3. Selesaikan alur login dan pastikan Anda diarahkan ke dasbor.
+4. Cek database Anda, pastikan data tersimpan dengan benar di tabel `users` (kolom `google_id` terisi).
+```
+
+### 3. Tahap Persetujuan dan Penggabungan (Merge)
+
+- Setelah PR diajukan, mintalah anggota tim lain untuk melakukan tinjauan kode (*Code Review*).
+- Pastikan tidak ada bentrok kode (*Merge Conflict*) dengan *branch* `main`. Jika ada, Anda wajib menyelesaikan konflik tersebut di *branch* Anda terlebih dahulu.
+- Setelah PR disetujui (minimal 1 atau sesuai kesepakatan tim), PR baru boleh digabungkan (*merge*) ke `main`.
+- Proses penggabungan ini akan secara otomatis memicu peluncuran aplikasi (deploy) ke server Render.
