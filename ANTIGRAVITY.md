@@ -22,7 +22,8 @@ File ini merupakan panduan dan konteks khusus untuk saya (Antigravity) dalam mem
    - Selalu catat perubahan skema menggunakan **Migrations**.
    - Gunakan **Factories** dan **Seeders** untuk menyiapkan data awal (*default data*) atau data tes, sehingga tim pengembang lain dapat menjalankan alur kerja aplikasi dengan lancar sejak instalasi pertama.
 
-4. **Aturan Git Commit**:
-   - Selalu ikuti **Conventional Commits** (*feat*, *fix*, *chore*, dll) dengan deskripsi menggunakan Bahasa Indonesia yang formal dan jelas, sesuai dengan aturan di `README.md`.
+4. **Aturan Git Commit & Tagging**:
+   - Selalu ikuti **Conventional Commits** (*feat*, *fix*, *chore*, dll) dengan deskripsi menggunakan Bahasa Indonesia yang formal dan jelas.
+   - Gunakan standar **Semantic Versioning (SemVer)** (`v<MAJOR>.<MINOR>.<PATCH>`) untuk merilis versi, sesuai dengan yang terdokumentasi di `README.md`.
 
 *Catatan: Saya akan selalu merujuk pada `README.md` untuk mengetahui alur instalasi agar saya dapat mereplikasi dan memperbaiki lingkungan saat ini apabila dibutuhkan.*

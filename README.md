@@ -151,3 +151,29 @@ fix(ui): memperbaiki tata letak tombol submit pada tampilan ponsel
 ```text
 refactor(dashboard): mengekstrak kartu statistik ke dalam Blade Component tersendiri
 ```
+
+---
+
+## Aturan Penamaan Versi & Tagging (Semantic Versioning)
+
+Untuk merilis versi baru atau melakukan *tagging* di Git, kita menggunakan standar **Semantic Versioning (SemVer)** dengan format `v<MAJOR>.<MINOR>.<PATCH>` (contoh: `v1.2.3`).
+
+Penentuan angka versi sangat bergantung pada jenis commit yang telah dilakukan sejak rilis sebelumnya:
+
+1. **MAJOR (Versi Mayor) - `v2.0.0`**
+   - **Kapan naik?** Jika ada perubahan besar yang mengubah struktur total, perombakan UI besar-besaran, atau perubahan arsitektur database yang tidak kompatibel dengan versi sebelumnya (*Breaking Changes*).
+   
+2. **MINOR (Versi Minor) - `v1.1.0`**
+   - **Kapan naik?** Jika ada fitur baru (`feat`) yang ditambahkan secara aman tanpa merusak fitur lama yang sudah ada.
+
+3. **PATCH (Versi Patch) - `v1.0.1`**
+   - **Kapan naik?** Jika hanya ada perbaikan *bug* (`fix`), peningkatan performa (`perf`), perubahan dokumen (`docs`), atau hal kecil lainnya yang sama sekali tidak menambah fitur baru.
+
+**Contoh Perintah Git Tag:**
+```bash
+# Membuat tag versi baru
+git tag -a v1.2.0 -m "Rilis v1.2.0: Menambahkan fitur otentikasi OTP"
+
+# Mengirim tag ke repositori jarak jauh (GitHub)
+git push origin v1.2.0
+```
