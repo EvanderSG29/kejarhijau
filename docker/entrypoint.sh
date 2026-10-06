@@ -14,6 +14,10 @@ if [ -n "$PORT" ]; then
     sed -i "s/8080/$PORT/g" /etc/nginx/nginx.conf
 fi
 
+# Fix permissions for files created by artisan commands running as root
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Start PHP-FPM in background
 php-fpm -D
 
