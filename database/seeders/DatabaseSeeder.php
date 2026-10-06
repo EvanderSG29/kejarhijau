@@ -3,23 +3,21 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * Membuat 1 akun admin awal (role tidak bisa dipilih lewat registrasi).
+     * Ubah password setelah login pertama!
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $admin = User::firstOrNew(['email' => 'admin@kejarhijau.test']);
+        $admin->nama_lengkap = 'Administrator';
+        $admin->password = env('ADMIN_PASSWORD', 'ChangeMe123!');
+        $admin->role = 'admin';
+        $admin->status_akses = true;
+        $admin->save();
     }
 }
