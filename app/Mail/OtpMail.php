@@ -31,7 +31,7 @@ class OtpMail extends Mailable
                     <div style='background-color: #f0fdf4; border: 1px dashed #22c55e; padding: 15px; text-align: center; margin: 20px 0; border-radius: 6px;'>
                         <span style='font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #15803d; font-family: monospace; user-select: all;'>{$this->otp}</span>
                     </div>
-                    <p style='color: #666; font-size: 13px;'>Kode ini berlaku selama <strong>10 menit</strong>. Jangan berikan kode ini kepada siapa pun.</p>
+                    <p style='color: #666; font-size: 13px;'>Kode ini berlaku selama <strong>5 menit</strong>. Jangan berikan kode ini kepada siapa pun.</p>
                 </div>
             ",
         );
