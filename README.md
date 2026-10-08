@@ -180,7 +180,7 @@ git push origin v1.2.0
 
 ---
 
-## 🔀 Alur Kerja Git (Branching & Pull Request)
+## Alur Kerja Git (Branching & Pull Request)
 
 **DILARANG KERAS** melakukan *commit* atau *push* secara langsung ke *branch* `main`. *Branch* `main` dikonfigurasi untuk proses *deployment* otomatis (CI/CD) ke server produksi (Render). Oleh karena itu, *branch* ini harus selalu dalam keadaan stabil. 
 
